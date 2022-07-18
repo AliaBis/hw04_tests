@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+<div class="container py-5">
+  {% comment %} Колонки с отступом сверху и снизу {% endcomment %}
+  <div class="row">
+    <h1>Благодаря этому проекту можно создавать посты, оставлять комментарии под постами и 
+      подписываться на понравившихся авторов. Этакий public-дневничок.</h1>
+    {% comment %}
+    Боковой блок со списком технологий
+    Займет всю ширину блока на мобильном
+    и 25% при размерах экрана ≥768px
+    {% endcomment %}
+    <aside class="col-12 col-md-3">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          Python, Django, DRF, DRF-Simple JWT
+        </li>
+        <li class="list-group-item">
+          Django CORS, Pillow, sorl-thumbnail, Bootstrap
+        </li>
+      </ul>
+    </aside>
+    {% comment %}
+    Статья
+    Займет всю ширину блока на мобильном
+    и 75% при размерах экрана ≥768px
+    {% endcomment %}
+    <article class="col-12 col-md-9">
+      <p>Технологии</p>
+    </article>
+  </div>
+</div>
+{% endblock %}

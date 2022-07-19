@@ -20,7 +20,7 @@ urlpatterns = [
     ),
     path(
         'signup/', views.SignUp.as_view(),
-        name='signup' # регистрация
+        name='signup'  # регистрация
     ),
     path(
         'login/',

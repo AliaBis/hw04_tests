@@ -24,7 +24,7 @@ LOGIN_REDIRECT_URL = 'posts:index'  # '/accounts/profile/'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 #  указываем директорию, в которую будут складываться файлы писем
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 
 ALLOWED_HOSTS = [
@@ -64,7 +64,8 @@ ROOT_URLCONF = 'yatube.urls'
 #  Путь к директории с шаблонами вынесен в переменную:
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
-    {   
+    {
+
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         #  Добавлено: Искать шаблоны на уровне проекта
         'DIRS': [TEMPLATES_DIR],   # смотри выше переменную

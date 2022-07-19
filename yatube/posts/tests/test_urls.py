@@ -36,9 +36,10 @@ class PostURLTests(TestCase):
         """Редирект неавторизованного пользователя"""
         url1 = '/auth/login/?next=/create/'
         url2 = f'/auth/login/?next=/posts/{self.post.id}/edit/'
-        pages: dict = {'/create/': url1,
-                    f'/posts/{self.post.id}/edit/': url2}
-                    #'/follow/': url3}
+        pages: dict = {
+            '/create/': url1,
+            f'/posts/{self.post.id}/edit/': url2
+        }
         for page, value in pages.items():
             response = self.guest_client.get(page)
             self.assertRedirects(response, value)
@@ -71,6 +72,7 @@ class PostURLTests(TestCase):
         """Запрос несуществующей страницы"""
         response = self.guest_client.get('/test-no-popular', follow=True)
         error_name = 'Ошибка: unexisting_url не работает'
-        self.assertEquals(response.status_code,
-                        HTTPStatus.NOT_FOUND,
-                        error_name)
+        self.assertEqual(
+            response.status_code,
+            HTTPStatus.NOT_FOUND, error_name
+        )

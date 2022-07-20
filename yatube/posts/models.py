@@ -30,11 +30,10 @@ class Post(CreatedModel):
     def __str__(self):
         return self.text[:LEN_OF_POSTS]
 
-
-class Meta:
-    verbose_name = 'Пост'
-    verbose_name_plural = 'Посты'
-    ordering = ('-pub_date', 'author')
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
+        ordering = ('-pub_date', 'author')
 
 
 class Group(models.Model):
@@ -57,8 +56,7 @@ class Group(models.Model):
     def __str__(self):
         return self.title
 
-
-class Meta:
-    verbose_name = 'Жанр'
-    verbose_name_plural = 'Жанры'
-    ordering = ('title',)
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
+        ordering = ('title',)

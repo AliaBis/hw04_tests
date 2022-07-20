@@ -43,7 +43,7 @@ class PostModelTest(TestCase):
     def test_title_help_text(self):
         '''Проверка заполнения help_text'''
         field_help_texts = {'text': 'Введите текст поста',
-                            'group': 'Группа для размещения поста'}
+                            'group': 'Группа, относительно поста'}
         for field, expected_value in field_help_texts.items():
             with self.subTest(field=field):
                 error_name = f'Поле {field} ожидало значение {expected_value}'

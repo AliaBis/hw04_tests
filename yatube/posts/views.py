@@ -4,46 +4,45 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import PostForm
 from .models import Group, Post, User
 
-
-POST_COUNT = 10
-OUTPUT_OF_POSTS = 30
 NUMBER_OF_POSTS: int = 10
 
 
 def paginator_group(request, post_list):
     paginator = Paginator(post_list, NUMBER_OF_POSTS)
     page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
-    return page
+    page_obj = paginator.get_page(page_number)
+    return page_obj
 
 
 def index(request):
+    template = 'posts/index.html'
     post_list = Post.objects.select_related('author', 'group').all()
-    page = paginator_group(request, post_list)
+    page_obj = paginator_group(request, post_list)
     context = {
-        'page': page,
+        'page_obj': page_obj
     }
-    return render(request, 'posts/index.html', context)
+    return render(request, template, context)
 
 
 def group_posts(request, slug):
+    template = 'posts/group_list.html'
     group = get_object_or_404(Group, slug=slug)
     post_list = Post.objects.select_related('author').all()
-    page = paginator_group(request, post_list)
+    page_obj = paginator_group(request, post_list)
     context = {
         'group': group,
-        'page': page,
+        'page_obj': page_obj
     }
-    return render(request, 'posts/group_list.html', context)
+    return render(request, template, context)
 
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     post_list = author.posts.select_related('group').all()
-    page = paginator_group(request, post_list)
+    page_obj = paginator_group(request, post_list)
     context = {
         'author': author,
-        'page': page
+        'page_obj': page_obj
     }
     return render(request, 'posts/profile.html', context)
 
@@ -86,7 +85,7 @@ def post_edit(request, post_id):
     context = {
         'post': post,
         'form': form,
-        'is_edit': True
+        'is_edit': True,
     }
     return render(request, template, context)
 

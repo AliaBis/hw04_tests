@@ -7,6 +7,10 @@ class PostForm(ModelForm):
     class Meta:
         model = Post
         fields = ['text', 'group']
+        help_text = {
+            'text': 'Текст поста',
+            'group': 'Группа'
+        }
 
     def clean_data(self):
         text = self.cleaned_data['text']

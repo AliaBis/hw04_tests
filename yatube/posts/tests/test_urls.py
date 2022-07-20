@@ -10,7 +10,7 @@ class PostURLTests(TestCase):
 
     def setUp(self):
         self.guest_client = Client()
-        self.user = User.objects.create_user(username='author')
+        self.user = User.objects.create_user(username='auth')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.post = Post.objects.create(
@@ -46,14 +46,15 @@ class PostURLTests(TestCase):
 
     def test_urls_authorized_client(self):
         """Доступ авторизованного пользователя"""
-        pages: tuple = ('/create/',
-                        f'/posts/{self.post.id}/edit/')
+        pages: tuple = (
+            '/create/',
+            f'/posts/{self.post.id}/edit/')
         for page in pages:
             response = self.authorized_client.get(page)
             error_name = f'Ошибка: нет доступа до страницы {page}'
             self.assertEqual(response.status_code, HTTPStatus.OK, error_name)
 
-    def test_urls_uses_correct_template(self):
+    def test_urls_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_url_names: dict = {
             '/': 'posts/index.html',
@@ -61,7 +62,8 @@ class PostURLTests(TestCase):
             f'/profile/{self.user.username}/': 'posts/profile.html',
             f'/posts/{self.post.id}/': 'posts/post_detail.html',
             '/create/': 'posts/create_post.html',
-            f'/posts/{self.post.id}/edit/': 'posts/create_post.html'}
+            f'/posts/{self.post.id}/edit/': 'posts/create_post.html'
+        }
         for adress, template in templates_url_names.items():
             with self.subTest(adress=adress):
                 response = self.authorized_client.get(adress)
@@ -74,5 +76,6 @@ class PostURLTests(TestCase):
         error_name = 'Ошибка: unexisting_url не работает'
         self.assertEqual(
             response.status_code,
-            HTTPStatus.NOT_FOUND, error_name
+            HTTPStatus.NOT_FOUND,
+            error_name
         )

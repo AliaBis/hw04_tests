@@ -31,17 +31,20 @@ class PaginatorViewsTest(TestCase):
 
     def test_number_of_posts_per_page(self):
         '''Проверка количества постов на первой и второй страницах. '''
-
-        pages: tuple = (reverse('posts:index'),
-                        reverse('posts:profile',
-                                kwargs={'username': f'{self.user.username}'}),
-                        reverse('posts:group_list',
-                                kwargs={'slug': f'{self.group.slug}'}))
+        pages: tuple = (
+            reverse('posts:index'),
+            reverse('posts:profile',
+                    kwargs={'username': f'{self.user.username}'}),
+            reverse('posts:group_list',
+                    kwargs={'slug': f'{self.group.slug}'})
+        )
         for page in pages:
             response1 = self.guest_client.get(page)
             response2 = self.guest_client.get(page + '?page=2')
-            count_posts1 = len(response1.context['page'])
-            count_posts2 = len(response2.context['page'])
+            count_posts1 = len(
+                response1.context['page_obj'])
+            count_posts2 = len(
+                response2.context['page_obj'])
             error_name1 = (
                 f'Ошибка: {count_posts1} постов,'
                 f' должно {FIRST_OF_POSTS}'
@@ -107,7 +110,7 @@ class PostViewsTest(TestCase):
                 error_name = f'Ошибка: {adress} ожидал шаблон {template}'
                 self.assertTemplateUsed(response, template, error_name)
 
-    def test_post_detail_page_show_correct_context(self):
+    def test_post_detail_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
         response = self.authorized_client.get(
             reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
@@ -119,7 +122,7 @@ class PostViewsTest(TestCase):
         for value, expected in post_text_0.items():
             self.assertEqual(post_text_0[value], expected)
 
-    def test_post_create_page_show_correct_context(self):
+    def test_post_create_correct_context(self):
         """Шаблон post_create сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse('posts:post_create'))
         form_fields = {
@@ -131,7 +134,7 @@ class PostViewsTest(TestCase):
                 form_field = response.context.get('form').fields.get(value)
                 self.assertIsInstance(form_field, expected)
 
-    def test_post_edit_page_show_correct_context(self):
+    def test_post_edit_correct_context(self):
         """Шаблон post_edit сформирован с правильным контекстом."""
         response = self.authorized_client.get(
             reverse('posts:post_edit',
@@ -147,7 +150,7 @@ class PostViewsTest(TestCase):
                 self.assertIsInstance(form_field, expected)
         self.assertTrue(response.context.get('is_edit'))
 
-    def test_post_added_correctly(self):
+    def test_post_added_correct(self):
         """Пост при создании добавлен корректно"""
         post = Post.objects.create(
             text='Тестовый текст проверка как добавился',
@@ -162,9 +165,9 @@ class PostViewsTest(TestCase):
         response_profile = self.authorized_client.get(
             reverse('posts:profile',
                     kwargs={'username': f'{self.user.username}'}))
-        index = response_index.context['page']
-        group = response_group.context['page']
-        profile = response_profile.context['page']
+        index = response_index.context['page_obj']
+        group = response_group.context['page_obj']
+        profile = response_profile.context['page_obj']
         self.assertIn(post, index, 'поста нет на главной')
         self.assertIn(post, group, 'поста нет в профиле')
         self.assertIn(post, profile, 'поста нет в группе')
@@ -173,7 +176,7 @@ class PostViewsTest(TestCase):
         self.assertEqual(post.group, var_group, ' нет переменной группы')
         self.assertEqual(post.author, var_profile, ' нет переменной автора')
 
-    def test_post_added_correctly_user2(self):
+    def test_post_added_correct_user2(self):
         """Пост при создании не добавляется другому пользователю
         Но виден на главной и в группе"""
         group2 = Group.objects.create(
@@ -189,7 +192,7 @@ class PostViewsTest(TestCase):
             reverse('posts:profile',
                     kwargs={'username': f'{self.user.username}'}))
         group = Post.objects.filter(group=self.group).count()
-        profile = response_profile.context['page']
+        profile = response_profile.context['page_obj']
         self.assertEqual(group, posts_count, 'поста нет в другой группе')
         self.assertNotIn(
             post, profile,

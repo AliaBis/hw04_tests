@@ -29,8 +29,8 @@ class PostURLTests(TestCase):
                         f'/posts/{self.post.id}/')
         for page in pages:
             response = self.guest_client.get(page)
-            error_name = f'Ошибка: нет доступа до страницы {page}'
-            self.assertEqual(response.status_code, HTTPStatus.OK, error_name)
+            NOT_ALLOWED = f'Ошибка: нет доступа до страницы {page}'
+            self.assertEqual(response.status_code, HTTPStatus.OK, NOT_ALLOWED)
 
     def test_urls_redirect_guest_client(self):
         """Редирект неавторизованного пользователя"""
@@ -51,8 +51,8 @@ class PostURLTests(TestCase):
             f'/posts/{self.post.id}/edit/')
         for page in pages:
             response = self.authorized_client.get(page)
-            error_name = f'Ошибка: нет доступа до страницы {page}'
-            self.assertEqual(response.status_code, HTTPStatus.OK, error_name)
+            NOT_ALLOWED = f'Ошибка: нет доступа до страницы {page}'
+            self.assertEqual(response.status_code, HTTPStatus.OK, NOT_ALLOWED)
 
     def test_urls_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
@@ -67,15 +67,15 @@ class PostURLTests(TestCase):
         for adress, template in templates_url_names.items():
             with self.subTest(adress=adress):
                 response = self.authorized_client.get(adress)
-                error_name = f'Ошибка: {adress} ожидал шаблон {template}'
-                self.assertTemplateUsed(response, template, error_name)
+                INVALID_TEMPLATE = f'Ошибка: {adress} ожидал шаблон {template}'
+                self.assertTemplateUsed(response, template, INVALID_TEMPLATE)
 
     def test_404(self):
         """Запрос несуществующей страницы"""
         response = self.guest_client.get('/test-no-popular', follow=True)
-        error_name = 'Ошибка: unexisting_url не работает'
+        NO_URL = 'Ошибка: unexisting_url не работает'
         self.assertEqual(
             response.status_code,
             HTTPStatus.NOT_FOUND,
-            error_name
+            NO_URL
         )

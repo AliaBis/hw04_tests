@@ -3,7 +3,7 @@ from django.test import TestCase
 from ..models import Post
 
 User = get_user_model()
-LEN_OF_POSTS = 15
+STRING_LENGTH = 15
 
 
 class PostModelTest(TestCase):
@@ -16,13 +16,13 @@ class PostModelTest(TestCase):
             text='Тестовое описание поста',
         )
 
-    def test_models_have_correct_object_names(self):
+    def test_models_have_correct_str_post(self):
         '''Проверка длины __str__ post'''
-        error_name = f"Вывод не имеет {LEN_OF_POSTS} символов"
+        INCORRECT_OUTPUT = f"Вывод не имеет {STRING_LENGTH} символов"
         self.assertEqual(
             self.post.__str__(),
-            self.post.text[:LEN_OF_POSTS],
-            error_name
+            self.post.text[:STRING_LENGTH],
+            INCORRECT_OUTPUT
         )
 
     def test_title_label(self):
@@ -35,10 +35,11 @@ class PostModelTest(TestCase):
         }
         for field, expected_value in field_verboses.items():
             with self.subTest(field=field):
-                error_name = f'Поле {field} ожидало значение {expected_value}'
+                INVALID_VALUE = f'Поле {field}'
+                f'ожидало значение {expected_value}'
                 self.assertEqual(
                     self.post._meta.get_field(field).verbose_name,
-                    expected_value, error_name)
+                    expected_value, INVALID_VALUE)
 
     def test_title_help_text(self):
         '''Проверка заполнения help_text'''
@@ -46,7 +47,8 @@ class PostModelTest(TestCase):
                             'group': 'Группа, относительно поста'}
         for field, expected_value in field_help_texts.items():
             with self.subTest(field=field):
-                error_name = f'Поле {field} ожидало значение {expected_value}'
+                INVALID_VALUE = f'Поле {field}'
+                f'ожидало значение {expected_value}'
                 self.assertEqual(
                     self.post._meta.get_field(field).help_text,
-                    expected_value, error_name)
+                    expected_value, INVALID_VALUE)

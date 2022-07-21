@@ -6,11 +6,6 @@ from django.urls import reverse
 from posts.models import Post, Group
 
 User = get_user_model()
-ERROR_NAME1 = "Пост не создался"
-ERROR_NAME2 = 'Поcт не добавлен в базу данных'
-ERROR_NAME3 = 'Данные поста не совпадают'
-ERROR_NAME5 = 'Пользователь не может изменить группу поста'
-ERROR_NAME4 = 'Пользователь не может изменить содержание поста'
 
 
 class PostFormTests(TestCase):
@@ -61,17 +56,18 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True
         )
+        POST_NOT_CREATED = 'Пост не создан'
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(Post.objects.filter(
             text='Текст записанный в форму',
             group=self.group.id,
             author=self.user
-        ).exists(), ERROR_NAME1
+        ).exists(), POST_NOT_CREATED
         )
         self.assertEqual(
             Post.objects.count(),
             posts_count + 1,
-            ERROR_NAME2
+            POST_NOT_CREATED
         )
 
     def test_can_edit_post(self):
@@ -89,6 +85,7 @@ class PostFormTests(TestCase):
             'text': 'Текст записанный в форму',
             'group': self.group2.id
         }
+        NOT_ALLOWED = 'У пользователя недостаточно прав'
         response = self.authorized_client.post(
             reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
             data=form_data,
@@ -99,6 +96,6 @@ class PostFormTests(TestCase):
             group=self.group2.id,
             author=self.user,
             pub_date=self.post.pub_date
-        ).exists(), ERROR_NAME3)
-        self.assertNotEqual(self.post.text, form_data['text'], ERROR_NAME4)
-        self.assertNotEqual(self.post.group, form_data['group'], ERROR_NAME5)
+        ).exists(), NOT_ALLOWED)
+        self.assertNotEqual(self.post.text, form_data['text'], NOT_ALLOWED)
+        self.assertNotEqual(self.post.group, form_data['group'], NOT_ALLOWED)

@@ -174,7 +174,10 @@ class PostViewsTest(TestCase):
         various_group = response_group.context['group']
         various_profile = response_profile.context['author']
         self.assertEqual(post.group, various_group, ' нет переменной группы')
-        self.assertEqual(post.author, various_profile, ' нет переменной автора')
+        self.assertEqual(
+            post.author,
+            various_profile, ' нет переменной автора'
+        )
 
     def test_post_added_correct_user2(self):
         """Пост при создании не добавляется другому пользователю

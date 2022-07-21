@@ -6,6 +6,11 @@ from django.urls import reverse
 from posts.models import Post, Group
 
 User = get_user_model()
+ERROR_NAME1 = "Пост не создался"
+ERROR_NAME2 = 'Поcт не добавлен в базу данных'
+ERROR_NAME3 = 'Данные поста не совпадают'
+ERROR_NAME5 = 'Пользователь не может изменить группу поста'
+ERROR_NAME4 = 'Пользователь не может изменить содержание поста'
 
 
 class PostFormTests(TestCase):
@@ -56,19 +61,17 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True
         )
-        error_name1 = "Пост не создался"
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(Post.objects.filter(
             text='Текст записанный в форму',
             group=self.group.id,
             author=self.user
-        ).exists(), error_name1
+        ).exists(), ERROR_NAME1
         )
-        error_name2 = 'Поcт не добавлен в базу данных'
         self.assertEqual(
             Post.objects.count(),
             posts_count + 1,
-            error_name2
+            ERROR_NAME2
         )
 
     def test_can_edit_post(self):
@@ -91,10 +94,11 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True)
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        error_name1 = 'Данные поста не совпадают'
         self.assertTrue(Post.objects.filter(
             id=self.post.id,
             group=self.group2.id,
             author=self.user,
             pub_date=self.post.pub_date
-        ).exists(), error_name1)
+        ).exists(), ERROR_NAME3)
+        self.assertNotEqual(self.post.text, form_data['text'], ERROR_NAME4)
+        self.assertNotEqual(self.post.group, form_data['group'], ERROR_NAME5)

@@ -20,14 +20,14 @@ class PaginatorViewsTest(TestCase):
             slug='test_group',
             description='Тестовое описание'
         )
-        bilk_post: list = []
+        bulk_posts: list = []
         for i in range(TEST_OF_POST):
-            bilk_post.append(Post(
+            bulk_posts.append(Post(
                 text=f'Тестовый текст {i}',
                 group=self.group,
                 author=self.user)
             )
-        Post.objects.bulk_create(bilk_post)
+        Post.objects.bulk_create(bulk_posts)
 
     def test_number_of_posts_per_page(self):
         '''Проверка количества постов на первой и второй страницах. '''
@@ -171,10 +171,10 @@ class PostViewsTest(TestCase):
         self.assertIn(post, index, 'поста нет на главной')
         self.assertIn(post, group, 'поста нет в профиле')
         self.assertIn(post, profile, 'поста нет в группе')
-        var_group = response_group.context['group']
-        var_profile = response_profile.context['author']
-        self.assertEqual(post.group, var_group, ' нет переменной группы')
-        self.assertEqual(post.author, var_profile, ' нет переменной автора')
+        various_group = response_group.context['group']
+        various_profile = response_profile.context['author']
+        self.assertEqual(post.group, various_group, ' нет переменной группы')
+        self.assertEqual(post.author, various_profile, ' нет переменной автора')
 
     def test_post_added_correct_user2(self):
         """Пост при создании не добавляется другому пользователю

@@ -7,8 +7,9 @@
     <h1>{{ group }}</h1>
     <p>{{ group.description|linebreaks}}</p>
     {% for post in page_obj %}
+      {% include 'posts/group-article.html' with profile_link_flag=False author_link=True %}
     {% empty %}
-      <p>В данной жанре постов нет</p>
+      <p>В данном жанре постов нет</p>
     {% endfor %}
       {% include 'posts/includes/paginator.html' %}
   </div>

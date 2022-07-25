@@ -1,36 +1,27 @@
 {% extends 'base.html' %}
-{% block title %}Профайл пользователя {{ author }}{% endblock %}
+{% block title %}Профайл пользователя {{ author.get_full_name }}{% endblock %}
 {% block content %}
-<main>
-  <div class="container py-5">
+  <div class="foll">
     <h1>Все посты пользователя {{ author.get_full_name }}</h1>
-    <h3>Всего постов: {{ count }} </h3>
-    <article>
-      {% for post in page_obj %}
-      <ul>
-        {% comment %} <li>
-          Автор: {{ post.author.get_full_name }}
-          <a href="{% url 'posts:profile' post.author.username %}">все посты пользователя</a>
-        </li> {% endcomment %}
-        <li>
-          Дата публикации: {{ post.pub_date|date:"d E Y" }}
-        </li>
-      </ul>
-      <p>
-        {{ post.text }}
-      </p>
-      <a href="{% url 'posts:post_detail' post.pk %}">подробная информация </a>
-    </article>
-    <br>
-    {% if post.group %}
-    <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+    <h3>Всего постов: {{ author.posts.count }}</h3>
+    <h6>Число подписчиков: {{ author.following.count }}</h6>
+    <h6>Подписан на количество авторов: {{ author.follower.count }}</h6>
+    {% if author != request.user %}  
+      {% if following %}
+        <a class="btn btn-lg btn-light"
+          href="{% url 'posts:profile_unfollow' author.username %}" role="button">
+          Отписаться
+        </a>
+      {% else %}
+        <a class="btn btn-lg btn-primary"
+          href="{% url 'posts:profile_follow' author.username %}" role="button">
+          Подписаться
+        </a>
+      {% endif %}
     {% endif %}
-    {% if not forloop.last %}
-    <hr>{% endif %}
-    {% empty %}
-    <p>Постов нет</p>
-    {% endfor %}
-    {% include 'posts/includes/paginator.html' %}
   </div>
-</main>
-{% endblock %}
+  {% for post in page_obj %}  
+    {% include 'posts/group-article.html' with profile_link_flag=True author_link=False%}
+  {% endfor %}
+  {% include 'posts/includes/paginator.html' %}
+{% endblock content %}

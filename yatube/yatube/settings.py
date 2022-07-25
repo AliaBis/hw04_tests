@@ -16,16 +16,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'jd!f4v2@5s!@pdx588#k03u$53g6a-y08wz%v&h^udi9@zgt^6'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-LOGIN_URL = 'users:login'  # '/accounts/login/'
-LOGIN_REDIRECT_URL = 'posts:index'  # '/accounts/profile/'
-#  LOGOUT_REDIRECT_URL = 'posts:index'
-#  подключаем движок filebased.EmailBackend
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-#  указываем директорию, в которую будут складываться файлы писем
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-
+DEBUG = True #False  # для отключения отладки нужно установить значение ключа DEBUG=False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -34,19 +25,23 @@ ALLOWED_HOSTS = [
     'testserver',
 ]
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+] 
 
 INSTALLED_APPS = [
-    'core.apps.CoreConfig',  # приложение core
-    'posts.apps.PostsConfig',  # приложение posts
-    'users.apps.UsersConfig',  # приложение users
-    'about.apps.AboutConfig',  # приложение about(статичные страницы)
     'django.contrib.admin',
     'django.contrib.auth',  # регистрация и авторизация пользователей
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-
+    'django.contrib.staticfiles', # приложение staticfiles необходимо для работы приложения DjDT
+    'core.apps.CoreConfig',  # приложение core
+    'posts.apps.PostsConfig',  # приложение posts
+    'users.apps.UsersConfig',  # приложение users
+    'about.apps.AboutConfig',  # приложение about(статичные страницы)
+    'sorl.thumbnail', # приложение для работы с картинками
+    'debug_toolbar', # это набор панелей, появляющихся на странице в режиме отладки
 ]
 
 MIDDLEWARE = [
@@ -57,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'yatube.urls'
@@ -136,3 +132,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+LOGIN_URL = 'users:login'  # '/accounts/login/'
+LOGIN_REDIRECT_URL = 'posts:index'  # '/accounts/profile/'
+#  LOGOUT_REDIRECT_URL = 'posts:index'
+#  подключаем движок filebased.EmailBackend
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+#  указываем директорию, в которую будут складываться файлы писем
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

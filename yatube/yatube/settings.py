@@ -18,6 +18,8 @@ SECRET_KEY = 'jd!f4v2@5s!@pdx588#k03u$53g6a-y08wz%v&h^udi9@zgt^6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True #False  # для отключения отладки нужно установить значение ключа DEBUG=False
 
+ALLOWED_HOSTS = ["*"]
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -94,6 +96,12 @@ DATABASES = {
 }
 
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 #  Password validation
 #  https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -116,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 #  Internationalization
 #  https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'UTC'
 

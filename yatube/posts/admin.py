@@ -17,15 +17,15 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'text',
-                    'author', 'post')
-    search_fields = ('text',)
-    list_filter = ('post',)
-    empty_value_display = '-пусто-'
+    list_display = ("pk", "text",
+                    "author", "post")
+    search_fields = ("text",)
+    list_filter = ("post",)
+    empty_value_display = "-пусто-"
 
 
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'user', 'author')
+    list_display = ("pk", "user", "author")
     search_fields = ('author',)
 
 

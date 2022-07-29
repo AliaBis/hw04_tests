@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
-from posts.models import Post, Group
+from posts.models import Post, Group, Comment
 
 User = get_user_model()
 
@@ -99,3 +99,73 @@ class PostFormTests(TestCase):
         ).exists(), NOT_ALLOWED)
         self.assertNotEqual(self.post.text, form_data['text'], NOT_ALLOWED)
         self.assertNotEqual(self.post.group, form_data['group'], NOT_ALLOWED)
+
+class CommentFormTest(TestCase):
+    def setUp(self):
+        self.guest_client = Client()
+        self.user = User.objects.create_user(username='auth')
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
+        self.group = Group.objects.create(
+            title='Тестовая группа',
+            slug='test-group',
+            description='Описание')
+        self.post = Post.objects.create(
+            text='Тестовый текст',
+            author=self.user,
+            group=self.group)
+        self.comment = Comment.objects.create(
+            post_id=self.post.id,
+            author=self.user,
+            text='Тестовый коммент')
+
+    def test_create_comment(self):
+        '''Проверка создания комментария'''
+        comment_count = Comment.objects.count()
+        form_data = {'post_id': self.post.id,
+                    'text': 'Тестовый коммент2'}
+        response = self.authorized_client.post(
+            reverse('posts:add_comment',
+                    kwargs={'post_id': self.post.id}),
+            data=form_data, follow=True)
+        error_name1 = 'Данные комментария не совпадают'
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTrue(Comment.objects.filter(
+                        text='Тестовый коммент2',
+                        post=self.post.id,
+                        author=self.user
+                        ).exists(), error_name1)
+        self.assertEqual(
+            Comment.objects.count(),
+            comment_count + 1,
+            'THERE_IS_NO_COMMENT')
+
+    def test_no_edit_comment(self):
+        '''Проверка запрета комментирования неавторизованого пользователя'''
+        posts_count = Comment.objects.count()
+        form_data = {'text': 'Тестовый коммент2'}
+        response = self.guest_client.post(
+            reverse('posts:add_comment',
+            kwargs={'post_id': self.post.id}),
+            data=form_data,
+            follow=True)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertNotEqual(
+            Comment.objects.count(),
+            posts_count + 1,
+            'ERRONEOUS_COMMENT')
+
+    def test_comment_null(self):
+        '''Запрет пустого комментария'''
+        posts_count = Comment.objects.count()
+        form_data = {'text': ''}
+        response = self.authorized_client.post(
+            reverse('posts:add_comment',
+                    kwargs={'post_id': self.post.id}),
+            data=form_data,
+            follow=True)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertNotEqual(
+            Comment.objects.count(),
+            posts_count + 1,
+            'ERRONEOUS_COMMENT')    

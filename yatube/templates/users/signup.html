@@ -28,7 +28,7 @@
 
           {# Выводим поля в цикле, по отдельности #}
           {% for field in form %}
-          <div class="form-group row my-3">
+          <div class="form-group row my-3 p-3">
             <label for="{{ field.id_for_label }}">
               {{ field.label }}
               {% if field.field.required %}
@@ -36,7 +36,7 @@
               {% endif %}
             </label>
             {# К полю ввода добавляем атрибут class #}
-            {{ field|addclass:'form-control' }}
+            {{ field}}
             {% if field.help_text %}
             <small id="{{ field.id_for_label }}-help" class="form-text text-muted">
               {{ field.help_text|safe }}
@@ -50,8 +50,8 @@
             </button>
           </div>
         </form>
-      </div> <!-- card body -->
-    </div> <!-- card -->
-  </div> <!-- col -->
-</div> <!-- row -->
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

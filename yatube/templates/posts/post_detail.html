@@ -13,7 +13,7 @@
           <li class="list-group-item">
             Группа: {{ post.group.title }}
             <a href="{% url 'posts:group_list' post.group.slug %}">
-              все записи группы
+              Все записи группы
             </a>
           </li>
         {% endif %}
@@ -37,7 +37,7 @@
       <p>{{ post.text|linebreaks }}</p>
       {% if post.author == user %}
         <a class="btn btn-primary" href="{% url 'posts:post_edit' post.id %}">
-          редактировать запись
+          Редактировать запись
         </a>
       {% endif %}
       <div class="card my-4">

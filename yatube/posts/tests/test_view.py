@@ -242,6 +242,22 @@ def test_cache_context(self):
         after_clear = self.authorized_client.get(reverse('posts:index'))
         self.assertNotEqual(first_item_after, after_clear)
 
+# от однокурсников, проверить
+# def test_cache_index(self):
+#         """Проверка хранения и очищения кэша для index."""
+#         response = self.authorized_author.get(reverse('posts:index'))
+#         posts = response.content
+#         Post.objects.create(
+#             text='test_new_post',
+#             author=self.author,
+#         )
+#         response_old = self.authorized_author.get(reverse('posts:index'))
+#         old_posts = response_old.content
+#         self.assertEqual(old_posts, posts)
+#         cache.clear()
+#         response_new = self.authorized_author.get(reverse('posts:index'))
+#         new_posts = response_new.content
+#         self.assertNotEqual(old_posts, new_posts)
 
 class FollowViewsTest(TestCase):
     @classmethod

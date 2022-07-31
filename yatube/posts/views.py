@@ -28,7 +28,7 @@ def index(request):
 def group_posts(request, slug):
     template = 'posts/group_list.html'
     group = get_object_or_404(Group, slug=slug)
-    post_list = Post.objects.select_related('author', 'group').all()
+    post_list = Post.objects.select_related('author').all()
     page_obj = paginator_group(request, post_list)
     context = {
         'group': group,
@@ -37,20 +37,34 @@ def group_posts(request, slug):
     return render(request, template, context)
 
 
-def profile(request, username):
+def profile(request, username): # проверить этот вариант
+    template = 'posts/profile.html'
     author = get_object_or_404(User, username=username)
-    post_list = Post.objects.filter(author=author)
+    post_list = author.posts.select_related('group').all()
     page_obj = paginator_group(request, post_list)
     following = (request.user.is_authenticated
                 and Follow.objects.filter(
-                    user=request.user,
-                    author=author).exists())
+                user=request.user,
+                author=author).exists())
     context = {
-        'author': author,
         'page_obj': page_obj,
-        'following': following
-    }
-    return render(request, 'posts/profile.html', context)
+        'author': author,
+        'following': following}
+    return render(request, template, context)
+# def profile(request, username):
+#     author = get_object_or_404(User, username=username)
+#     post_list = Post.objects.filter(author=author)
+#     page_obj = paginator_group(request, post_list)
+#     following = (request.user.is_authenticated
+#                 and Follow.objects.filter(
+#                     user=request.user,
+#                     author=author).exists())
+#     context = {
+#         'author': author,
+#         'page_obj': page_obj,
+#         'following': following
+#     }
+#     return render(request, 'posts/profile.html', context)
 
 
 def post_detail(request, post_id):
@@ -58,9 +72,10 @@ def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
     form = CommentForm()
-    context = {'post': post,
-                'form': form,
-                'comments': comments}
+    context = {
+        'post': post,
+        'form': form,
+        'comments': comments}
     return render(request, template, context)
 
 
@@ -101,19 +116,19 @@ def post_edit(request, post_id):
     return render(request, template, context)
 
 
-def page_not_found(request):
-    # Переменная exception содержит отладочную информацию,
-    # выводить её в шаблон пользователской страницы 404 мы не станем
-    return render(
-        request,
-        "misc/404.html",
-        {"path": request.path},
-        status=404
-    )
+# def page_not_found(request):
+#     # Переменная exception содержит отладочную информацию,
+#     # выводить её в шаблон пользователской страницы 404 мы не станем
+#     return render(
+#         request,
+#         "misc/404.html",
+#         {"path": request.path},
+#         status=404
+#     )
 
 
-def server_error(request):
-    return render(request, "misc/500.html", status=500)
+# def server_error(request):
+#     return render(request, "misc/500.html", status=500)
 
 @login_required
 def add_comment(request, post_id):
@@ -131,8 +146,8 @@ def add_comment(request, post_id):
 def follow_index(request):
     template = 'posts/follow.html'
     posts_list = Post.objects.filter(author__following__user=request.user)
-    page = paginator_group(request, posts_list)
-    context = {"page_obj": page}
+    page_obj = paginator_group(request, posts_list)
+    context = {'page_obj': page_obj}
     return render(request, template, context)
 
 

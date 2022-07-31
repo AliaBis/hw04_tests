@@ -9,7 +9,7 @@ NUMBER_OF_POSTS: int = 10
 
 def paginator_group(request, post_list):
     paginator = Paginator(post_list, NUMBER_OF_POSTS)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get('page_obj')
     page_obj = paginator.get_page(page_number)
     return page_obj
 

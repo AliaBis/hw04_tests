@@ -1,15 +1,8 @@
 from django.urls import path
 from . import views
-from django.contrib.auth.views import (
-    LoginView,
-    LogoutView,
-    PasswordChangeDoneView,
-    PasswordChangeView,
-    PasswordResetCompleteView,
-    PasswordResetConfirmView,
-    PasswordResetDoneView,
-    PasswordResetView,
-)
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LogoutView  
+from django.contrib.auth.views import PasswordResetView
 app_name = 'users'
 
 urlpatterns = [
@@ -29,35 +22,12 @@ urlpatterns = [
             template_name='users/password_reset_form.html'),
         name='password_reset_form'),
     # отправляется ссылка
-        #        path('password_reset/done/',
-        # PasswordResetDoneView.as_view(
-        #     template_name='users/password_reset_done.html'),
-        # name='password_reset_done'),
     # установление нового пароля
     path('password_change/',
         views.PasswordChange.as_view(),
-            #template_name='users/password_change_form.html'),
         name='password_change'),
     # уведомление о новом пароле
     path('password_change/done/',
         views.Done,
-            #template_name='users/password_change_done.html'),
         name='password_change_done'),
 ]
-
-#     # подтверждение сброса пароля
-#     # страница, на которую попадает пользователь после ссылки на письмо
-#     path(
-#         'reset/<uidb64>/<token>/',
-#         PasswordResetConfirmView.as_view(
-#             template_name='users/password_reset_confirm.html'),
-#         name='password_reset_confirm',
-#     ),
-#     # пароль изменен
-#     path(
-#         'reset/done/',
-#         PasswordResetCompleteView.as_view(
-#             template_name='users/password_reset_complete.html'),
-#         name='password_reset_complete',
-#     ),
-# ]

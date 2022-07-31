@@ -32,15 +32,15 @@ class Post(CreatedModel):
         blank=True,
         help_text='Картинка')
 
-    
+    def __str__(self):
+        return self.text[:LEN_OF_POSTS]
 
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
         ordering = ('-pub_date', 'author')
     
-    def __str__(self):
-        return self.text[:LEN_OF_POSTS]
+    
 
 class Group(models.Model):
     title = models.CharField(
@@ -70,18 +70,23 @@ class Group(models.Model):
 
 class Comment(CreatedModel):
     
-    post = models.ForeignKey('Post',
-                            on_delete=models.CASCADE,
-                            related_name='comments',
-                            verbose_name='Текст поста',
-                            blank=True,
-                            null=True)
-    author = models.ForeignKey(User,
-                            on_delete=models.CASCADE,
-                            related_name='comments',
-                            verbose_name='Автор')
-    text = models.TextField(verbose_name='Комментарий',
-                            help_text='Напишите комментарий')
+    post = models.ForeignKey(
+        'Post',
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Текст поста',
+        blank=True,
+        null=True
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Автор'
+    )
+    text = models.TextField(
+        verbose_name='Комментарий',
+        help_text='Напишите комментарий')
 
     class Meta:
         ordering = ('-pub_date',)
@@ -90,10 +95,14 @@ class Comment(CreatedModel):
 
 
 class Follow(models.Model):
-    user = models.ForeignKey(User, related_name='follower',
-                            on_delete=models.CASCADE)
-    author = models.ForeignKey(User, related_name='following',
-                            on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name='follower',
+        on_delete=models.CASCAD
+    )
+    author = models.ForeignKey(
+        User, related_name='following',
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ('-author',)

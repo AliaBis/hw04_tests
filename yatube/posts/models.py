@@ -97,7 +97,7 @@ class Comment(CreatedModel):
 class Follow(models.Model):
     user = models.ForeignKey(
         User, related_name='follower',
-        on_delete=models.CASCAD
+        on_delete=models.CASCADE
     )
     author = models.ForeignKey(
         User, related_name='following',

@@ -1,13 +1,18 @@
 from http import HTTPStatus
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from posts.models import Post, Group, Comment
+import shutil
+from django.conf import settings
+import tempfile
 
 User = get_user_model()
+TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostFormTests(TestCase):
     def setUp(self):
         self.small_gif = (
@@ -31,6 +36,11 @@ class PostFormTests(TestCase):
             title='Тестовая группа',
             slug='test-group',
             description='Описание')
+    
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        super().tearDownClass()
 
     def test_create_post(self):
         '''Проверка создания поста'''
@@ -48,11 +58,12 @@ class PostFormTests(TestCase):
             content_type='image/gif')
         posts_count = Post.objects.count()
         form_data = {
-            'text': 'Текст записанный в форму',
-            'group': self.group.id
+            'text': 'Текст',
+            'group': self.group.id,
+            'image': self.uploaded
         }
         response = self.authorized_client.post(
-            reverse('posts:post_create'),
+            reverse('posts:create_post'),
             data=form_data,
             follow=True
         )
@@ -60,6 +71,7 @@ class PostFormTests(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(Post.objects.filter(
             text='Текст записанный в форму',
+            image=f'posts/{self.uploaded}',
             group=self.group.id,
             author=self.user
         ).exists(), POST_NOT_CREATED
@@ -75,14 +87,15 @@ class PostFormTests(TestCase):
         self.post = Post.objects.create(
             text='Тестовый текст',
             author=self.user,
-            group=self.group
+            group=self.group,
+            image=self.uploaded
         )
         self.group2 = Group.objects.create(
             title='Тестовая группа2',
             slug='test-group2',
             description='Описание')
         form_data = {
-            'text': 'Текст записанный в форму',
+            'text': 'Текст',
             'group': self.group2.id
         }
         NOT_ALLOWED = 'У пользователя недостаточно прав'
@@ -95,6 +108,7 @@ class PostFormTests(TestCase):
             id=self.post.id,
             group=self.group2.id,
             author=self.user,
+            image=f'posts/{self.uploaded}',
             pub_date=self.post.pub_date
         ).exists(), NOT_ALLOWED)
         self.assertNotEqual(self.post.text, form_data['text'], NOT_ALLOWED)

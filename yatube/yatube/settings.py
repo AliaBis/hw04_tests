@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',  # приложение users
     'about.apps.AboutConfig',  # приложение about(статичные страницы)
     'sorl.thumbnail', # приложение для работы с картинками
-    'debug_toolbar', # это набор панелей, появляющихся на странице в режиме отладки
+    #'debug_toolbar', # это набор панелей, появляющихся на странице в режиме отладки
 ]
 
 MIDDLEWARE = [
@@ -54,7 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'yatube.urls'

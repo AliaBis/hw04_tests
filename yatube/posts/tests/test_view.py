@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from django.core.cache import cache
+#from django.core.cache import cache
 from ..models import Group, Post, Comment, Follow
 
 TEST_OF_POST: int = 13
@@ -226,21 +226,21 @@ class PostViewsTest(TestCase):
             'поста нет в группе другого пользователя'
         )
 
-def test_cache_context(self):
-        '''Проверка кэширования страницы index'''
-        before_create_post = self.authorized_client.get(
-            reverse('posts:index'))
-        first_item_before = before_create_post.content
-        Post.objects.create(
-            author=self.user,
-            text='Проверка кэша',
-            group=self.group)
-        after_create_post = self.authorized_client.get(reverse('posts:index'))
-        first_item_after = after_create_post.content
-        self.assertEqual(first_item_after, first_item_before)
-        cache.clear()
-        after_clear = self.authorized_client.get(reverse('posts:index'))
-        self.assertNotEqual(first_item_after, after_clear)
+# def test_cache_context(self):
+#         '''Проверка кэширования страницы index'''
+#         before_create_post = self.authorized_client.get(
+#             reverse('posts:index'))
+#         first_item_before = before_create_post.content
+#         Post.objects.create(
+#             author=self.user,
+#             text='Проверка кэша',
+#             group=self.group)
+#         after_create_post = self.authorized_client.get(reverse('posts:index'))
+#         first_item_after = after_create_post.content
+#         self.assertEqual(first_item_after, first_item_before)
+#         cache.clear()
+#         after_clear = self.authorized_client.get(reverse('posts:index'))
+#         self.assertNotEqual(first_item_after, after_clear)
 
 # от однокурсников, проверить
 # def test_cache_index(self):
